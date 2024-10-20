@@ -1,0 +1,9 @@
+<mat-card class="album-card" (click)="navigateToDetails(album)">
+  <mat-card-header>
+    <mat-card-title>{{ album.name }}</mat-card-title>
+  </mat-card-header>
+  <img mat-card-image [src]="album.images[0].url" alt="{{ album.name }}">
+  <mat-card-content>
+    <p>Release Date: {{ album.release_date }}</p>
+  </mat-card-content>
+</mat-card>

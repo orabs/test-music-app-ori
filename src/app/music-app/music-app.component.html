@@ -1,0 +1,17 @@
+<app-search-component></app-search-component>
+<div *ngIf="(albums$ | async) as albums" class="result-wrapper" (scroll)="onScroll($event)">
+    <div *ngIf="albums.length; else noAlbums" class="album-list">
+        <app-basic-album-component *ngFor="let album of albums" [album]="album"></app-basic-album-component>
+    </div>
+    <ng-container *ngIf="isLoading$ | async">
+        <div class="loading-spinner">
+            <mat-spinner diameter="200"></mat-spinner>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #noAlbums>
+    <div class="spotify-logo-wrapper">
+        <img class="spotify-logo" height="550" src="https://storage.googleapis.com/pr-newsroom-wp/1/2024/01/Spotify_FTR_Header-1920x733.png" alt="Spotify Logo">
+    </div>
+</ng-template>

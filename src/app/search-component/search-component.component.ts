@@ -1,38 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { SpotifySearchService } from '../services/spotify-service.service';
-import * as Albums from '../models/Albums';
+import { SpotifyService } from '../services/spotify.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { AlbumDetails } from '../models/Albums';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BasicAlbumComponentComponent } from '../basic-album-component/basic-album-component.component';
+import { AuthService } from '../services/auth.service';
+import { AlbumsService } from '../services/albums.service';
 
 @Component({
   selector: 'app-search-component',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, BasicAlbumComponentComponent],
   providers: [HttpClientModule],
   templateUrl: './search-component.component.html',
-  styleUrl: './search-component.component.scss'
+  styleUrls: ['./search-component.component.scss']
 })
-export class SearchComponentComponent implements OnInit {
+export class SearchComponent implements OnInit {
 
+  constructor(private spotifyService: SpotifyService, private albumsService: AlbumsService, private authToken: AuthService){}
 
-  albums$: Subject<AlbumDetails[]> = new Subject();
-  searchQuery: string = '';
-  constructor(private spotifyService: SpotifySearchService){}
-  
+  onSearchKeyUp(event: KeyboardEvent){
+    const searchQuery = (event.target as HTMLInputElement).value;
+    this.albumsService.resetOffset();
+    this.albumsService.searchQuery = searchQuery;
+    this.albumsService.loadMoreAlbums()
+  }
+
   ngOnInit() {
     this.spotifyService.getAccessToken().subscribe((data: any) => {
-      this.spotifyService.setToken(data.access_token)
+      this.authToken.setToken(data.access_token)
     })
   }
-  
-  searchAlbum(): void {
-    this.spotifyService.searchAlbums(this.searchQuery).subscribe(({albums}) =>{
-      this.albums$.next(albums.items);
-    })
-  }
-  
-  
 }

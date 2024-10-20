@@ -1,3 +1,12 @@
+export interface AlbumResponse {
+    href: string;
+    items: AlbumDetails[];
+    limit: number;
+    next: string;
+    offset: number;
+    previous: string;
+    total: number;
+}
 
 export interface AlbumDetails {
     album_type: string;
@@ -14,17 +23,6 @@ export interface AlbumDetails {
     uri: string;
 }
 
-export interface AlbumResponse { 
-    href: string;
-    items : AlbumDetails[];
-    limit: number;
-    next: string;
-    offset: number;
-    previous: string;
-    total:number;
-}
-
-
 export interface Artist {
    
     external_urls: string[];
@@ -35,12 +33,11 @@ export interface Artist {
     uri: string
 }
 
-
 export interface Image {
     
     url: string;
-    height: 300;
-    width: 300;
+    height: number;
+    width: number;
 }      
         
     

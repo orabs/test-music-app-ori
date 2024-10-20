@@ -1,0 +1,47 @@
+ <div class="album-container" *ngIf="album">
+      <div class="album-header">
+        <div class="album-image" *ngIf="album.images && album.images.length">
+          <img [src]="album.images[0].url" [alt]="album.name">
+        </div>
+        <div class="album-info">
+          <h1>{{ album.name }}</h1>
+          <div class="artists">
+            <span *ngFor="let artist of album.artists; let last = last">
+              {{ artist.name }}{{ !last ? ', ' : '' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="album-details">
+        <div class="detail-row">
+          <span class="label">Album Type:</span>
+          <span class="value">{{ album.album_type | titlecase }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Release Date:</span>
+          <span class="value">{{ album.release_date | date:'mediumDate' }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Total Tracks:</span>
+          <span class="value">{{ album.total_tracks }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">Type:</span>
+          <span class="value">{{ album.type | titlecase }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="label">ID:</span>
+          <span class="value">{{ album.id }}</span>
+        </div>
+      </div>
+
+
+    </div>
+    <button mat-raised-button> 
+        <a routerLink="/albums">Back To Search</a>
+    </button>
