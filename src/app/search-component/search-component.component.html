@@ -1,0 +1,11 @@
+<div>
+  <input type="text" [(ngModel)]= "searchQuery" placeholder="Search for an album" (keyup)="searchAlbum()">
+ 
+</div>
+
+<div *ngIf="( albums$ | async)  as albums  ">
+  <div *ngFor="let album of albums">
+    <img [src]="album.images[0]?.url"  width="100">
+    <h3>{{ album.name }}</h3>
+  </div>
+</div>
