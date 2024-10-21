@@ -1,0 +1,39 @@
+<mat-toolbar class="search-toolbar">
+  <div class="left-section">
+    <a (click)="goHome()" class="home-link">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </a>
+
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <mat-icon (click)="onSearch(searchInput.value)" class="search-icon">search</mat-icon>
+        <input #searchInput type="text" [matMenuTriggerFor]="menu" (focus)="openRecentMenu()"
+          placeholder="Search For Albums...">
+        <button class="clear-button" (click)="clearSearchInput(searchInput)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <mat-menu #menu="matMenu" class="recent-searches-menu">
+        <div class="menu-header" (click)="$event.stopPropagation()">Recent Searches</div>
+        <div *ngFor="let search of (recentAlbumsSearch$ | async);let i = index" class="menu-item">
+          <button mat-menu-item (click)="onRecentClick(search)">
+            <div class="search-item-content">
+              <mat-icon>history</mat-icon>
+              <span>{{ search }}</span>
+            </div>
+          </button>
+          <button mat-icon-button class="remove-button" (click)="removeSearch(i)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div class="auth-buttons">
+    <a class="signup-link" (click)="openRegisterDialog()">Sign up</a>
+    <button class="login-button" (click)="openLoginDialog()">Log in</button>
+  </div>
+</mat-toolbar>

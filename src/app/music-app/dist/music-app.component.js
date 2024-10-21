@@ -8,15 +8,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.MusicAppComponent = void 0;
 var core_1 = require("@angular/core");
-var search_component_component_1 = require("../search-component/search-component.component");
 var basic_album_component_component_1 = require("../basic-album-component/basic-album-component.component");
 var forms_1 = require("@angular/forms");
 var common_1 = require("@angular/common");
 var button_1 = require("@angular/material/button");
 var icon_1 = require("@angular/material/icon");
+var rxjs_1 = require("rxjs");
 var progress_spinner_1 = require("@angular/material/progress-spinner");
 var MusicAppComponent = /** @class */ (function () {
-    function MusicAppComponent(albumsService) {
+    function MusicAppComponent(authToken, spotifyService, albumsService) {
+        this.authToken = authToken;
+        this.spotifyService = spotifyService;
         this.albumsService = albumsService;
         this.SCROLL_THRESHOLD = 50; // Defined magic number as a constant
     }
@@ -34,27 +36,39 @@ var MusicAppComponent = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    MusicAppComponent.prototype.onScroll = function (event) {
-        console.log(event);
-        var target = event.target;
-        if (this.isScrolledToBottom(target)) {
-            this.loadMoreAlbums();
-        }
+    MusicAppComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.spotifyService.getAccessToken().subscribe(function (data) {
+            _this.authToken.setToken(data.access_token);
+        });
+    };
+    MusicAppComponent.prototype.ngAfterViewInit = function () {
+        var _this = this;
+        rxjs_1.fromEvent(this.ResultsContainer.nativeElement, 'scroll').pipe(rxjs_1.debounceTime(1000)).subscribe(function () {
+            var target = _this.ResultsContainer.nativeElement;
+            if (_this.isScrolledToBottom(target)) {
+                _this.loadMoreAlbums();
+            }
+        });
     };
     MusicAppComponent.prototype.loadMoreAlbums = function () {
-        this.albumsService.incrementOffset();
-        this.albumsService.loadMoreAlbums();
+        if (!this.albumsService.isBottom) {
+            this.albumsService.incrementOffset();
+            this.albumsService.loadMoreAlbums();
+        }
     };
     MusicAppComponent.prototype.isScrolledToBottom = function (element) {
         return element.scrollHeight - element.scrollTop - element.clientHeight < this.SCROLL_THRESHOLD;
     };
+    __decorate([
+        core_1.ViewChild('ResultsContainer')
+    ], MusicAppComponent.prototype, "ResultsContainer");
     MusicAppComponent = __decorate([
         core_1.Component({
             selector: 'app-music-app',
             standalone: true,
             imports: [
                 progress_spinner_1.MatProgressSpinnerModule,
-                search_component_component_1.SearchComponent,
                 basic_album_component_component_1.BasicAlbumComponentComponent,
                 forms_1.FormsModule,
                 common_1.CommonModule,

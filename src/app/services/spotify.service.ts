@@ -1,35 +1,27 @@
 import {
   HttpClient,
+  HttpErrorResponse,
   HttpHeaders,
   HttpParams
 } from '@angular/common/http';
-import {
-  Injectable
-} from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Observable,
-  Subject,
   catchError,
   debounceTime,
   distinctUntilChanged,
-  throwError
+  of 
 } from 'rxjs';
-import {
-  environment
-} from '../../environments/environment';
-import {
-  AlbumDetails
-} from '../models/albums';
-import {
-  AuthService
-} from './auth.service';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
+import { ErrorHandlingService } from './error-handle.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpotifyService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private errorHandlingService: ErrorHandlingService, private http: HttpClient, private authService: AuthService) {}
   private readonly SPOTIFY_API_TOKEN: string = 'https://accounts.spotify.com/api/token';
 
   getAccessToken(): Observable < any > {
@@ -43,23 +35,27 @@ export class SpotifyService {
 
     return this.http.post(this.SPOTIFY_API_TOKEN, body, {
       headers
-    })
+    }).pipe(
+      catchError(error => this.errorHandlingService.handleError(error))
+    )
   }
 
   getAlbumsApi(query: string, limit: number, offset: number): Observable < any > {
     if (!this.authService.getToken()) {
-      return throwError(() => new Error('Token is missing'));
+      const error = new HttpErrorResponse({
+        status: 401,
+        statusText: 'Authorization token is missing. Please log in.'
+      });
+      this.errorHandlingService.handleError(error);
+      return of();
     }
     const headers = this.authService.getAuthHeaders();
     return this.http.get(`https://api.spotify.com/v1/search?q=${query}&type=album&limit=${limit}&offset=${offset}`, {
       headers
     }).pipe(
-      debounceTime(3000),
+      debounceTime(20000),
       distinctUntilChanged(),
-      catchError(error => {
-        console.error('Error searching albums:', error);
-        return throwError(() => new Error('Failed to search albums'));
-      })
+      catchError(error => this.errorHandlingService.handleError(error))
     );
   }
 }

@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Sign-Up</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input [(ngModel)]="data.email" type="email" matInput>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input [(ngModel)]="data.password" type="password" matInput>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Repeat Password</mat-label>
+    <input [(ngModel)]="data.repassword" type="password" matInput>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Sign Up</button>
+</mat-dialog-actions>

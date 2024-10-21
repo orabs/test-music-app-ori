@@ -17,7 +17,6 @@ export class ExtendAlbumComponentComponent {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
   ) {
     // Method 1: Retrieve state data
     const navigation = this.router.getCurrentNavigation();
@@ -25,4 +24,7 @@ export class ExtendAlbumComponentComponent {
       this.album = navigation.extras.state['album'];
     }
   }
+  navigateBack() {
+    this.router.navigate(['/albums']);
+    }
 }
